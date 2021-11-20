@@ -118,4 +118,9 @@ router.put('/me/avatar', auth, upload.single('avatar'), asyncHandler(async (req,
     res.sendStatus(204)
 }))
 
+router.delete('/me', auth, asyncHandler(async (req, res) => {
+    await User.deleteOne({ _id: req.User._id })
+    res.sendStatus(204)
+}))
+
 module.exports = router
