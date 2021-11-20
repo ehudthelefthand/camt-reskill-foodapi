@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const path = require('path')
 const multer = require('multer')
 const fs = require('fs')
+const crypto = require('crypto')
 const User = require('../models/user')
 const auth = require('../middlewares/auth')
 
@@ -59,7 +60,6 @@ router.post('/register', upload.single('avatar'), asyncHandler(async (req, res) 
 router.post('/login', asyncHandler(async (req, res) => {
     const { username, password } = req.body
     const user = await User.findOne({ email: username }).select("+password").exec()
-    console.log(user)
     if (!user) {
         res.sendStatus(401)
         return
@@ -71,8 +71,12 @@ router.post('/login', asyncHandler(async (req, res) => {
         return
     }
 
+    const remember = crypto.randomBytes(32).toString('hex')
+    user.remember = remember
+    await user.save()
+
     const token = jwt.sign({
-        id: user._id,
+        remember,
     }, SECRET, { 
         expiresIn: TOKEN_EXPIRE
     })
@@ -120,6 +124,13 @@ router.put('/me/avatar', auth, upload.single('avatar'), asyncHandler(async (req,
 
 router.delete('/me', auth, asyncHandler(async (req, res) => {
     await User.deleteOne({ _id: req.User._id })
+    res.sendStatus(204)
+}))
+
+
+router.post('/logout', auth, asyncHandler(async (req, res) => {
+    const user = req.User
+    await User.findByIdAndUpdate(user._id, { $unset: { remember: 1 } })    
     res.sendStatus(204)
 }))
 

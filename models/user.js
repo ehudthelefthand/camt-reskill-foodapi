@@ -34,6 +34,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         select: false
     },
+    remember: {
+        type: String,
+    }
 })
 
 module.exports = mongoose.model('User', userSchema)
