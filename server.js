@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
+const morgan = require('morgan')
 
 const userRoute = require('./routes/user')
 const foodRoute = require('./routes/food')
@@ -11,8 +12,10 @@ const PORT = process.env.PORT || 3000
 
 const app = express()
 
+app.use(express.static('images'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(morgan('dev'))
 
 app.use('/', userRoute)
 app.use('/foods', foodRoute)

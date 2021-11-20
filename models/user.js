@@ -22,7 +22,12 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
         required: true,
+        unique: true,
         validate: [ validator.isEmail, 'Invalid email' ]
+    },
+    avatar: {
+        type: String,
+        trim: true,
     },
     password: {
         type: String,
