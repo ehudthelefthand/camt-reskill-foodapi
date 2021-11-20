@@ -1,0 +1,36 @@
+const express = require('express')
+const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
+
+const userRoute = require('./routes/user')
+const foodRoute = require('./routes/food')
+const orderRoute = require('./routes/order')
+
+const DB_HOST = process.env.DB_HOST || 'mongodb://localhost/food_db'
+const PORT = process.env.PORT || 3000
+
+const app = express()
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+
+app.use('/', userRoute)
+app.use('/foods', foodRoute)
+app.use('/orders', orderRoute)
+
+app.use((err, req, res, next) => {
+    console.log(err)
+    if (err instanceof jwt.JsonWebTokenError) {
+        res.sendStatus(401)
+        return
+    }
+    res.status(500).send(err.message)
+})
+
+mongoose.connect(DB_HOST, err => {
+    if (err) {
+        console.error(err)
+        return
+    }
+    app.listen(PORT, () => console.log(`server started at port ${PORT}`))
+})
