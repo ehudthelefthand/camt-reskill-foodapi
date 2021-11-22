@@ -18,7 +18,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
+          username: ${{ secrets.camt-reskill-do }}
           script: |
             cd camt-reskill-foodapi
             git pull origin main
