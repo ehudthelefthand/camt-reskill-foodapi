@@ -5,14 +5,23 @@ const Food = require('../models/food')
 const router = express.Router()
 
 router.get('/', asyncHandler(async (req, res, next) => {
-    let query = Food.find()
     if (req.query.offset && req.query.limit) {
         const offset = Number(req.query.offset)
         const limit = Number(req.query.limit)
-        query = query.skip(offset * limit).limit(limit)
+        const foods = await Food.find()
+            .skip(offset * limit)
+            .limit(limit)
+            .exec()
+        const total = await Food.count().exec()
+        res.json({
+            data: foods.map(food => ({ ...food.toJSON(), photo: `/foods/${food.photo}` })),
+            total
+        })
+    } else {
+        const foods = await Food.find().exec()
+        res.json(foods.map(food => ({ ...food.toJSON(), photo: `/foods/${food.photo}` })))
     }
-    const foods = await query.exec()
-    res.json(foods.map(food => ({ ...food.toJSON(), photo: `/foods/${food.photo}` })))
+    
 }))
 
 module.exports = router
