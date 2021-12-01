@@ -29,7 +29,7 @@ router.get('/', auth, asyncHandler(async (req, res, next) => {
     const orders = await Order
         .find({ customer: user._id })
         .populate('customer')
-        .populate('food')
+        .populate('foods')
         .exec()
     
     res.json(orders)
