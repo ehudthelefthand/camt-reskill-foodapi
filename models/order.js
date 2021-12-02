@@ -12,6 +12,8 @@ const orderSchema = new mongoose.Schema({
         ref: 'Food',
         required: true
     }]
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model('Order', orderSchema)

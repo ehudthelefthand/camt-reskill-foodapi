@@ -100,7 +100,7 @@ router.put('/me', auth, asyncHandler(async (req, res) => {
         user.firstname = firstname
     }
     if (lastname) {
-        user.firstname = lastname
+        user.lastname = lastname
     }
     if (phoneNumber) {
         user.phoneNumber = phoneNumber
